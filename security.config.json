@@ -1,0 +1,92 @@
+{
+  "version": "1.0.0",
+  "owasp": {
+    "standard": "2026",
+    "lastUpdated": "2026-03-15"
+  },
+  "security": {
+    "webApplication": {
+      "brokenAccessControl": {
+        "enforceServerSideChecks": true,
+        "principleOfLeastPrivilege": true,
+        "denyByDefault": true,
+        "sessionManagement": "strict"
+      },
+      "softwareSupplyChain": {
+        "sbom": {
+          "enabled": true,
+          "format": "CycloneDX",
+          "autoUpdate": true
+        },
+        "sca": {
+          "enabled": true,
+          "tools": ["npm audit", "snyk", "owasp-dependency-check"],
+          "ciIntegration": true
+        }
+      },
+      "securityMisconfiguration": {
+        "automatedAudits": true,
+        "disableUnnecessaryServices": true,
+        "secureDefaults": true,
+        "environmentSeparation": true
+      },
+      "exceptionalConditions": {
+        "failSecurely": true,
+        "sanitizeErrorMessages": true,
+        "noStackTraceLeakage": true,
+        "structuredLogging": true
+      },
+      "cryptographicFailures": {
+        "tlsVersion": "1.3",
+        "hashAlgorithm": "Argon2id",
+        "keyRotation": "90days",
+        "certificateValidation": "strict"
+      }
+    },
+    "agenticAI": {
+      "goalHijack": {
+        "intentCapsules": true,
+        "humanApprovalRequired": ["high-risk", "financial", "system"],
+        "inputValidation": "strict"
+      },
+      "toolMisuse": {
+        "granularPermissions": true,
+        "semanticFirewall": true,
+        "toolCallVerification": true,
+        "readOnlyByDefault": true
+      },
+      "memoryPoisoning": {
+        "memorySegmentation": true,
+        "tenantIsolation": true,
+        "memoryExpiration": "30days",
+        "verificationRequired": true
+      },
+      "codeExecution": {
+        "sandboxedExecution": true,
+        "wasmIsolation": true,
+        "ephemeralVMs": true,
+        "codeReviewRequired": true
+      },
+      "cascadingFailures": {
+        "circuitBreakers": true,
+        "rateLimiting": true,
+        "resourceQuotas": true,
+        "failureIsolation": true
+      }
+    },
+    "headers": {
+      "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'",
+      "xFrameOptions": "DENY",
+      "xContentTypeOptions": "nosniff",
+      "referrerPolicy": "strict-origin-when-cross-origin",
+      "permissionsPolicy": "geolocation=(), microphone=(), camera=()",
+      "strictTransportSecurity": "max-age=31536000; includeSubDomains"
+    },
+    "monitoring": {
+      "logSecurityEvents": true,
+      "intrusionDetection": true,
+      "anomalyDetection": true,
+      "auditLogging": true
+    }
+  }
+}

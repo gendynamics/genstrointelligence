@@ -1,0 +1,9 @@
+# Deliah Material - maps deliah.jpeg as diffuse texture
+newmtl DelihaMaterial
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.3 0.3 0.3
+Ns 50.0
+d 1.0
+illum 2
+map_Kd deliah.jpeg

@@ -1,0 +1,63 @@
+{
+  "name": "genstrointelligence",
+  "version": "1.0.0",
+  "homepage": "https://genstrointelligence.com",
+  "description": "Genstro Intelligence - Cybersecurity Platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "security:chain": "npx ts-node --skip-project scripts/security-chain.ts",
+    "security:audit": "npm audit",
+    "security:fix": "npm audit fix",
+    "security:typecheck": "npx tsc --noEmit",
+    "security:full": "npm run security:chain && npm run security:typecheck && npm run security:audit",
+    "prebuild": "npm run security:chain"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.92.7",
+    "@react-three/fiber": "^8.15.12",
+    "@react-three/postprocessing": "^2.15.12",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "react-scripts": "^5.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "security": {
+    "owasp": {
+      "version": "2026",
+      "enforced": [
+        "Broken Access Control",
+        "Software Supply Chain Failures",
+        "Security Misconfiguration",
+        "Mishandling of Exceptional Conditions",
+        "Cryptographic Failures",
+        "Agent Goal Hijack (ASI01)",
+        "Tool Misuse & Over-Privilege (ASI02)",
+        "Memory & Context Poisoning (ASI06)",
+        "Unexpected Code Execution (ASI05)",
+        "Cascading Failures (ASI08)"
+      ]
+    }
+  }
+}
