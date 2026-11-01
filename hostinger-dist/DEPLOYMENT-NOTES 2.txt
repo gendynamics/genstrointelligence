@@ -1,0 +1,7 @@
+Hostinger deployment package generated.
+Upload every file and folder from this directory into public_html.
+After upload, clear Hostinger cache/CDN and browser cache.
+Validate:
+- / loads successfully
+- Direct route refresh works (e.g. /products, /quantum)
+- HTTPS redirect and security headers are active

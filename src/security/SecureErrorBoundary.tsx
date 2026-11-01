@@ -46,7 +46,9 @@ export class SecureErrorBoundary extends Component<Props, State> {
     };
 
     // In production, this would be sent to a secure logging service
-    console.log('Secure Error Log:', JSON.stringify(secureLog, null, 2));
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Secure Error Log:', JSON.stringify(secureLog, null, 2));
+    }
   }
 
   private sanitizeStackTrace(stackTrace: string): string {

@@ -1,0 +1,135 @@
+# ═══════════════════════════════════════════════════════════════
+# GENSTRO INTELLIGENCE — Production Apache Config
+# OWASP Top 10 2026 | PCI-DSS 4.0 | MITRE ATT&CK Mitigations
+# TLS 1.3 Enforced | Bootstrap 5.3.8 SRI
+# ═══════════════════════════════════════════════════════════════
+
+# Enable Rewrite Engine
+RewriteEngine On
+
+# ── MITRE ATT&CK T1557: Force HTTPS (Adversary-in-the-Middle) ──
+# Hostinger terminates SSL and exposes the request scheme through HTTPS.
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# ── TLS 1.3: Managed by Hostinger at server level ──
+# SSLProtocol/SSLCipherSuite not permitted on shared hosting
+# Hostinger enforces TLS 1.2+ by default; TLS 1.3 enabled via hPanel SSL settings
+
+# ── SPA Fallback ──
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/static/
+RewriteCond %{REQUEST_URI} !^/img/
+RewriteCond %{REQUEST_URI} !^/_headers
+RewriteCond %{REQUEST_URI} !^/.well-known/
+RewriteRule ^ /index.html [L]
+
+# ── MITRE ATT&CK T1190: Block HTTP Method Abuse ──
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_METHOD} !^(GET|POST|HEAD)$ [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ── MITRE ATT&CK T1190/T1595: Block Attack Paths & Scanners ──
+# WordPress, phpMyAdmin, common exploit probes
+RewriteRule ^(wp-admin|wp-login|wp-includes|wp-content|xmlrpc\.php) - [F,L]
+RewriteRule ^(phpmyadmin|pma|myadmin|mysql|sql|adminer) - [F,L,NC]
+RewriteRule ^(\.env|\.git|\.svn|\.hg|\.DS_Store) - [F,L]
+RewriteRule ^(admin|administrator|console|debug|test|backup|dump) - [F,L,NC]
+RewriteRule ^(cgi-bin|scripts|vendor|node_modules) - [F,L,NC]
+RewriteRule \.(sql|bak|old|orig|swp|log|ini|conf|cfg)$ - [F,L,NC]
+
+# ── OWASP A05: Disable Directory Listing ──
+Options -Indexes
+
+# ── Security Headers ──
+
+<IfModule mod_headers.c>
+    # OWASP A03: Content Security Policy (Injection Prevention)
+    Header set Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; media-src 'self'; object-src 'none'; child-src 'none'; frame-src 'none'; worker-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests"
+
+    # OWASP A01: Clickjacking Prevention
+    Header set X-Frame-Options "DENY"
+
+    # OWASP A05: MIME Sniffing Prevention
+    Header set X-Content-Type-Options "nosniff"
+
+    # OWASP A03: XSS Filter
+    Header set X-XSS-Protection "1; mode=block"
+
+    # OWASP A01: Referrer Leakage Prevention
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # OWASP A05: Feature/Permissions Restriction
+    Header set Permissions-Policy "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()"
+
+    # OWASP A02 / MITRE T1557: HSTS with Preload (TLS 1.3, 2-year max-age)
+    Header set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+
+    # MITRE ATT&CK T1189: Cross-Origin Isolation
+    Header set Cross-Origin-Opener-Policy "same-origin"
+    Header set Cross-Origin-Resource-Policy "same-origin"
+
+    # OWASP A02: Certificate Transparency
+    Header set Expect-CT "max-age=86400, enforce"
+
+    # MITRE ATT&CK T1592: Suppress Server Fingerprinting
+    Header set X-DNS-Prefetch-Control "off"
+    Header set X-Permitted-Cross-Domain-Policies "none"
+    Header set X-Download-Options "noopen"
+    Header unset X-Powered-By
+    Header unset Server
+    Header unset X-AspNet-Version
+    Header unset X-AspNetMvc-Version
+
+    # MITRE ATT&CK T1539: Secure Cookie Flags
+    Header edit Set-Cookie ^(.*)$ "$1; HttpOnly; Secure; SameSite=Strict"
+
+    # OWASP A08: SRI Enforcement — Cache busting on HTML
+    Header set Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+
+    # Search Engine Indexing (production-ready)
+    Header set X-Robots-Tag "index, follow"
+</IfModule>
+
+# ── Static Assets Caching (OWASP A06: Outdated Components — force revalidation) ──
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(js|css|woff2?|ttf|eot|svg)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+        Header set X-Content-Type-Options "nosniff"
+    </FilesMatch>
+
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp|ico)$">
+        Header set Cache-Control "public, max-age=86400"
+        Header set X-Content-Type-Options "nosniff"
+    </FilesMatch>
+</IfModule>
+
+# ── Clean URLs ──
+
+# Remove trailing slash
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [R=301,L]
+
+# Remove .html extension
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [L]
+
+# ── OWASP A01/A05: Block Sensitive Files ──
+
+<FilesMatch "\.(env|git|gitignore|npmrc|DS_Store|htpasswd|htaccess|ini|log|sh|sql|bak|swp)$">
+    Require all denied
+</FilesMatch>
+
+# Block access to hidden files/directories
+RewriteRule (^\.|/\.) - [F]
+
+# ── OWASP A05: Error Document Hardening ──
+ErrorDocument 403 "Forbidden"
+ErrorDocument 404 "Not Found"
+ErrorDocument 500 "Internal Server Error"

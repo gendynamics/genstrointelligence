@@ -1,0 +1,22 @@
+# Genstro Intelligence Security.txt
+# OWASP 2026 Compliance - Responsible Disclosure Policy
+
+Contact: security@genstrointelligence.com
+Contact: https://genstrointelligence.com/security/contact
+Encryption: https://genstrointelligence.com/security/pgp-key.txt
+Preferred-Languages: en
+Canonical: https://genstrointelligence.com/.well-known/security.txt
+
+# Security Policy
+Policy: https://genstrointelligence.com/security/policy
+
+# Vulnerability Disclosure
+# We follow responsible disclosure practices
+# Please allow 90 days for remediation before public disclosure
+
+# Supported Encryption
+# We support PGP encryption for sensitive communications
+# Key fingerprint: [REDACTED FOR SECURITY]
+
+# Last Updated
+Expires: 2027-03-15T00:00:00.000Z

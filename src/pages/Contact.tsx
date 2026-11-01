@@ -1,134 +1,64 @@
 import React, { useState } from 'react';
-// @ts-ignore
+import { useLocation } from 'react-router-dom';
 import '../styles/Contact.css';
 
 const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const plan = params.get('plan');
+  const product = params.get('product');
+  const initialSubject = plan ? `Pricing inquiry - ${plan} tier` : product ? `${product} briefing request` : '';
+  const [formData, setFormData] = useState({ name: '', email: '', subject: initialSubject, message: '' });
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Contact form submitted:', formData);
-    // Handle form submission here
-    alert('Message sent! We\'ll get back to you soon.');
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setSubmitted(true);
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
   return (
-    <div className="contact-container">
-      <div className="contact-header">
-        <h1 className="contact-title">
-          Contact Us
-        </h1>
-        <p className="contact-subtitle">
-          Ready to secure your future? Let's talk about how Genstro Intelligence can protect your organization.
-        </p>
-      </div>
+    <main className="contact-page">
+      <section className="contact-hero" aria-labelledby="contact-title">
+        <p className="contact-kicker">Strategic intake</p>
+        <h1 id="contact-title">Start with the signal that matters.</h1>
+        <p>Tell us what is changing, what is at risk, or where confidence is missing. We will direct your inquiry to the right intelligence team.</p>
+      </section>
 
-      <div className="contact-form-container">
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="name" className="form-label">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="form-input"
-              placeholder="Your full name"
-            />
-          </div>
+      <section className="contact-workspace" aria-label="Contact Genstro Intelligence">
+        <aside className="contact-brief">
+          <p className="contact-kicker">Briefing desk</p>
+          <h2>Bring the problem into focus.</h2>
+          <dl>
+            <div><dt>Response window</dt><dd>9:30 AM - 10:00 PM</dd></div>
+            <div><dt>Direct channel</dt><dd><a href="mailto:support@genstrointelligence.com">support@genstrointelligence.com</a></dd></div>
+            <div><dt>Typical starting point</dt><dd>Executive briefing, platform review, or security assessment.</dd></div>
+          </dl>
+        </aside>
 
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="form-input"
-              placeholder="your.email@company.com"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="subject" className="form-label">
-              Subject
-            </label>
-            <input
-              type="text"
-              id="subject"
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              required
-              className="form-input"
-              placeholder="How can we help?"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="message" className="form-label">
-              Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              required
-              rows={6}
-              className="form-textarea"
-              placeholder="Tell us about your security needs..."
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="form-submit-btn"
-          >
-            Send Message
-          </button>
-        </form>
-      </div>
-
-      <div className="contact-info-section">
-        <h2 className="contact-info-title">Other Ways to Reach Us</h2>
-        <div className="contact-info-grid">
-          <div className="contact-info-item">
-            <h3>Email</h3>
-            <p>contact@genstrointelligence.com</p>
-          </div>
-          <div className="contact-info-item">
-            <h3>Security Hotline</h3>
-            <p>1-800-SECURE-NOW</p>
-          </div>
-          <div className="contact-info-item">
-            <h3>Response Time</h3>
-            <p>&lt; 24 hours</p>
-          </div>
+        <div className="contact-form-wrap">
+          {submitted ? (
+            <div className="contact-success" role="status"><span>Received</span><h2>Your briefing request is in the queue.</h2><p>Thank you. A Genstro specialist will follow up using the contact details you provided.</p><button type="button" onClick={() => setSubmitted(false)}>Send another request <span aria-hidden="true">↗</span></button></div>
+          ) : (
+            <form className="contact-form" onSubmit={handleSubmit}>
+              <div className="contact-form-head"><span>01</span><p>Describe the context. We will take it from there.</p></div>
+              <div className="contact-field-grid">
+                <label>Full name<input type="text" name="name" value={formData.name} onChange={handleChange} required autoComplete="name" placeholder="Your name" /></label>
+                <label>Work email<input type="email" name="email" value={formData.email} onChange={handleChange} required autoComplete="email" placeholder="you@company.com" /></label>
+              </div>
+              <label>Inquiry subject<input type="text" name="subject" value={formData.subject} onChange={handleChange} required placeholder="What would you like to discuss?" /></label>
+              <label>Context<textarea name="message" value={formData.message} onChange={handleChange} required rows={7} placeholder="Include the challenge, decision, or capability you want to explore." /></label>
+              <button className="contact-submit" type="submit">Send briefing request <span aria-hidden="true">↗</span></button>
+            </form>
+          )}
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

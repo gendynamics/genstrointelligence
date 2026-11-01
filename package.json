@@ -1,12 +1,22 @@
 {
   "name": "genstrointelligence",
   "version": "1.0.0",
-  "homepage": "https://genstrointelligence.com",
   "description": "Genstro Intelligence - Cybersecurity Platform",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gendynamics/genstrointelligence.git"
+  },
+  "author": "gendynamics",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gendynamics/genstrointelligence/issues"
+  },
+  "homepage": "https://genstrointelligence.com",
   "main": "index.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "prepare:hostinger": "sh scripts/prepare-hostinger.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "security:chain": "npx ts-node --skip-project scripts/security-chain.ts",
@@ -22,11 +32,12 @@
     "@react-three/postprocessing": "^2.15.12",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0",
+    "react-router-dom": "^7.18.3",
     "three": "^0.160.0"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.9.5",
+    "ajv": "^8.20.0",
     "react-scripts": "^5.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"

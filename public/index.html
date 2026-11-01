@@ -3,64 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
     <title>Genstro Intelligence — Open the Door</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap");
       body {
         font-family: "Orbitron", sans-serif;
         margin: 0;
         background: #000;
-      }
-      /* Hide Tailwind CDN badge — nuclear suppression */
-      #__tailwindcss-cdn-indicator,
-      [style*="tailwindcss"],
-      body > div:not(#root),
-      body > button:not(#root *),
-      body > a:not(#root *),
-      body > svg:not(#root *),
-      body > iframe:not(#root *) {
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        position: absolute !important;
-        overflow: hidden !important;
-        clip: rect(0, 0, 0, 0) !important;
-        z-index: -9999 !important;
+        color: #fff;
+        overflow-x: hidden;
       }
     </style>
-    <script>
-      // Remove any Tailwind CDN injected elements on load
-      window.addEventListener("DOMContentLoaded", function () {
-        document
-          .querySelectorAll(
-            "body > *:not(#root):not(script):not(noscript):not(style)",
-          )
-          .forEach(function (el) {
-            el.remove();
-          });
-        new MutationObserver(function (mutations) {
-          mutations.forEach(function (m) {
-            m.addedNodes.forEach(function (node) {
-              if (
-                node.nodeType === 1 &&
-                node.id !== "root" &&
-                node.parentElement === document.body &&
-                node.tagName !== "SCRIPT" &&
-                node.tagName !== "STYLE"
-              ) {
-                node.remove();
-              }
-            });
-          });
-        }).observe(document.body, { childList: true });
-      });
-    </script>
   </head>
-  <body class="bg-black text-white overflow-x-hidden">
+  <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>

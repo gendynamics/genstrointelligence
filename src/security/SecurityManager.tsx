@@ -3,10 +3,24 @@ import React from 'react';
 // OWASP 2026 Security Implementation for Genstro Intelligence
 // Implements Agentic AI & LLM security controls
 
+export interface IntentCapsule {
+  intent: string;
+  context: Record<string, unknown>;
+  requiresApproval: boolean;
+  timestamp: number;
+  approved: boolean;
+}
+
+export interface MemoryEntry {
+  [key: string]: unknown;
+  timestamp?: number;
+  verified?: boolean;
+}
+
 export class SecurityManager {
   private static instance: SecurityManager;
-  private intentCapsules: Map<string, any> = new Map();
-  private memorySegments: Map<string, any[]> = new Map();
+  private intentCapsules: Map<string, IntentCapsule> = new Map();
+  private memorySegments: Map<string, MemoryEntry[]> = new Map();
   private toolPermissions: Map<string, string[]> = new Map();
 
   static getInstance(): SecurityManager {
@@ -17,7 +31,7 @@ export class SecurityManager {
   }
 
   // ASI01: Agent Goal Hijack Protection
-  createIntentCapsule(intent: string, context: any, requiresApproval: boolean = false): string {
+  createIntentCapsule(intent: string, context: Record<string, unknown>, requiresApproval: boolean = false): string {
     const capsuleId = `capsule_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     this.intentCapsules.set(capsuleId, {
       intent,
@@ -74,7 +88,7 @@ export class SecurityManager {
     return segmentId;
   }
 
-  addToMemory(segmentId: string, entry: any, verified: boolean = false): boolean {
+  addToMemory(segmentId: string, entry: MemoryEntry, verified: boolean = false): boolean {
     if (!this.memorySegments.has(segmentId)) return false;
 
     // Only accept verified memory entries
@@ -138,14 +152,14 @@ export class SecurityManager {
     return patterns.some(pattern => pattern.test(input));
   }
 
-  private detectMemoryPoisoning(entry: any): boolean {
+  private detectMemoryPoisoning(entry: unknown): boolean {
     if (typeof entry !== 'object' || !entry) return true;
 
     // Check for malicious patterns in memory entries
     // Use char-code concatenation to avoid triggering static analysis on the detector itself
     const proto = ['_','_','p','r','o','t','o','_','_'].join('');
     const maliciousKeys = [proto, 'constructor', 'prototype'];
-    return Object.keys(entry).some(key => maliciousKeys.includes(key));
+    return Object.keys(entry as Record<string, unknown>).some(key => maliciousKeys.includes(key));
   }
 
   private expireOldMemory(segmentId: string): void {
@@ -154,7 +168,7 @@ export class SecurityManager {
 
     const cutoff = Date.now() - (30 * 24 * 60 * 60 * 1000); // 30 days
     const filtered = segment.filter(entry =>
-      entry.verified || entry.timestamp > cutoff
+      entry.verified || (entry.timestamp ?? 0) > cutoff
     );
 
     this.memorySegments.set(segmentId, filtered);

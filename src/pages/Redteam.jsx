@@ -1,129 +1,133 @@
 import React from 'react';
 
+const MONO = "'DM Mono', monospace";
+
+const services = [
+  {
+    label: '01 / BREACH',
+    title: 'Penetration Testing',
+    text: 'Automated and human-led penetration testing that maps realistic breach paths across identity, cloud, application, and operational systems.',
+  },
+  {
+    label: '02 / DECEIVE',
+    title: 'Social Engineering',
+    text: 'Human-layer adversary simulation — phishing, pretexting, and trust exploitation that exposes the gaps attackers actually use.',
+  },
+  {
+    label: '03 / SIMULATE',
+    title: 'Adversary Simulation',
+    text: 'Continuous threat-led campaigns that validate detection, response, and readiness against real attacker tradecraft.',
+  },
+];
+
 const Redteam = () => {
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#000',
-      color: '#67e8f9',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '6rem 2rem 2rem 2rem'
-    }}>
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '3rem'
-      }}>
-        <h1 style={{
-          fontSize: '3rem',
-          marginBottom: '1rem',
-          textShadow: '0 0 20px #67e8f9'
-        }}>
-          Red Team
-        </h1>
-        <p style={{
-          fontSize: '1.5rem',
-          maxWidth: '600px',
-          margin: '0 auto',
-          opacity: 0.9
-        }}>
-          Attack. Test. Improve. The spear that finds every weakness.
-        </p>
-      </div>
+    <div style={styles.page}>
+      {/* Full-bleed live operations view */}
+      <section style={styles.hero} aria-label="Red team live operations view">
+        <video
+          style={styles.heroMedia}
+          src="/img/red.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div style={styles.heroShade} aria-hidden="true" />
+        <p style={styles.caption}>RED TEAM / LIVE OPERATIONS VIEW</p>
+      </section>
 
-      <img
-        src="/img/redteam.png"
-        alt="Red Team Operations"
-        style={{
-          width: '100%',
-          maxWidth: '900px',
-          borderRadius: '16px',
-          marginBottom: '2rem',
-          border: '1px solid rgba(103, 232, 249, 0.2)',
-          boxShadow: '0 0 40px rgba(103, 232, 249, 0.15)',
-        }}
-      />
+      {/* Service columns */}
+      <main style={styles.main}>
+        <section style={styles.services} className="redteam-services" aria-label="Red team services">
+          {services.map((service) => (
+            <article key={service.title} style={styles.card}>
+              <span style={styles.cardLabel}>{service.label}</span>
+              <h3 style={styles.cardTitle}>{service.title}</h3>
+              <p style={styles.cardText}>{service.text}</p>
+            </article>
+          ))}
+        </section>
+      </main>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '2rem',
-        maxWidth: '1200px',
-        width: '100%'
-      }}>
-        <div style={{
-          background: 'rgba(103, 232, 249, 0.1)',
-          border: '1px solid #67e8f9',
-          borderRadius: '12px',
-          padding: '2rem',
-          textAlign: 'center'
-        }}>
-          <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Penetration Testing</h3>
-          <p style={{ lineHeight: '1.6' }}>
-            Ethical hacking and vulnerability exploitation to identify security gaps
-            before malicious actors can discover them.
-          </p>
-        </div>
-
-        <div style={{
-          background: 'rgba(103, 232, 249, 0.1)',
-          border: '1px solid #67e8f9',
-          borderRadius: '12px',
-          padding: '2rem',
-          textAlign: 'center'
-        }}>
-          <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Social Engineering</h3>
-          <p style={{ lineHeight: '1.6' }}>
-            Advanced social engineering assessments and training to protect
-            against human-factor vulnerabilities.
-          </p>
-        </div>
-
-        <div style={{
-          background: 'rgba(103, 232, 249, 0.1)',
-          border: '1px solid #67e8f9',
-          borderRadius: '12px',
-          padding: '2rem',
-          textAlign: 'center'
-        }}>
-          <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Adversary Simulation</h3>
-          <p style={{ lineHeight: '1.6' }}>
-            Realistic attack simulations using AI-powered tactics, techniques,
-            and procedures (TTPs) of modern threat actors.
-          </p>
-        </div>
-
-        <div style={{
-          background: 'rgba(103, 232, 249, 0.1)',
-          border: '1px solid #67e8f9',
-          borderRadius: '12px',
-          padding: '2rem',
-          textAlign: 'center'
-        }}>
-          <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Exploit Development</h3>
-          <p style={{ lineHeight: '1.6' }}>
-            Custom exploit creation and weaponization research to stay
-            ahead of emerging threats and zero-day vulnerabilities.
-          </p>
-        </div>
-      </div>
-
-      <div style={{
-        marginTop: '3rem',
-        textAlign: 'center',
-        maxWidth: '800px'
-      }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Offensive Intelligence</h2>
-        <p style={{ fontSize: '1.1rem', lineHeight: '1.7', opacity: 0.9 }}>
-          Our red team employs aggressive, intelligence-driven approaches to uncover
-          hidden vulnerabilities. We think like attackers, act like adversaries,
-          and deliver actionable intelligence to strengthen defenses.
-        </p>
-      </div>
+      <style>{`
+        @media (max-width: 900px) {
+          .redteam-services { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   );
+};
+
+const styles = {
+  page: {
+    minHeight: '100vh',
+    background: '#020609',
+    color: '#e8eef4',
+    fontFamily: "'Manrope', sans-serif",
+    paddingTop: '64px',
+  },
+  hero: {
+    position: 'relative',
+    width: '100%',
+    height: 'min(72vh, 760px)',
+    overflow: 'hidden',
+  },
+  heroMedia: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    display: 'block',
+  },
+  heroShade: {
+    position: 'absolute',
+    inset: 0,
+    background:
+      'linear-gradient(to top, rgba(2,6,9,0.75) 0%, rgba(2,6,9,0.1) 45%, rgba(2,6,9,0.35) 100%)',
+    pointerEvents: 'none',
+  },
+  caption: {
+    position: 'absolute',
+    left: '2.5rem',
+    bottom: '1.8rem',
+    margin: 0,
+    fontFamily: MONO,
+    fontSize: '0.66rem',
+    letterSpacing: '0.32em',
+    color: '#f5a15e',
+    textShadow: '0 0 12px rgba(245, 161, 94, 0.45)',
+  },
+  main: {
+    maxWidth: '1500px',
+    margin: '0 auto',
+    padding: '3.5rem 2.5rem 5rem',
+  },
+  services: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '3rem',
+  },
+  card: {},
+  cardLabel: {
+    fontFamily: MONO,
+    fontSize: '0.62rem',
+    letterSpacing: '0.3em',
+    color: '#f87171',
+  },
+  cardTitle: {
+    margin: '0.9rem 0 0.9rem',
+    fontSize: 'clamp(1.6rem, 2.4vw, 2.2rem)',
+    fontWeight: 650,
+    letterSpacing: '-0.01em',
+    color: '#eef3f7',
+  },
+  cardText: {
+    margin: 0,
+    maxWidth: '420px',
+    fontSize: '0.95rem',
+    lineHeight: 1.7,
+    color: 'rgba(209, 213, 219, 0.62)',
+  },
 };
 
 export default Redteam;

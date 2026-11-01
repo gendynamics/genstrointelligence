@@ -1,0 +1,11 @@
+Hostinger deployment package generated from the current production build.
+
+Upload every file and folder inside this directory into the domain's
+public_html directory. Upload hidden files too, especially .htaccess.
+
+After upload:
+- Enable the domain SSL certificate in hPanel.
+- Clear Hostinger cache/CDN and browser cache.
+- Verify / loads successfully.
+- Verify direct route refreshes work, for example /products and /quantum.
+- Verify HTTPS redirect and security headers are active.

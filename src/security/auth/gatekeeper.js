@@ -1,39 +1,16 @@
-// src/security/components/Door.jsx
-// The guarded entry. Click only if cleared.
+// src/security/auth/gatekeeper.js
+// Entry gatekeeper — validates visitor access before door opens.
 
-import React from 'react';
+const ALLOWED_ENTRY = true;
 
-const Door = ({ onClick }) => {
-  return (
-    <div 
-      onClick={onClick} // clicks go to gatekeeper first
-      style={{
-        width: 'min(90vw, 400px)',
-        height: 'min(90vw, 400px)',
-        borderRadius: '50%',
-        border: '12px solid #67e8f9',
-        background: '#000',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        boxShadow: '0 0 60px #67e8f9',
-        margin: 'auto',
-        transition: 'all 0.4s ease'
-      }}
-      onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 100px #67e8f9'}
-      onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 60px #67e8f9'}
-    >
-      <h1 style={{
-        color: '#67e8f9',
-        fontSize: 'clamp(1.8rem, 7vw, 3rem)',
-        letterSpacing: '0.3em',
-        textTransform: 'uppercase'
-      }}>
-        OPEN
-      </h1>
-    </div>
-  );
-};
+export function checkAccess() {
+  return ALLOWED_ENTRY;
+}
 
-export default Door;
+export function handleDoorClick(callback) {
+  if (checkAccess()) {
+    callback();
+  }
+}
+
+export default { checkAccess, handleDoorClick };

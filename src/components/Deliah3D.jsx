@@ -94,7 +94,7 @@ export default function Deliah3DAvatar({ width = 180, height = 340, isOpen, isDr
   if (videoError) {
     return (
       <img
-        src="/deliah.jpeg"
+        src="/img/deliah.jpeg"
         alt="Deliah"
         draggable={false}
         style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', display: 'block' }}
@@ -113,7 +113,7 @@ export default function Deliah3DAvatar({ width = 180, height = 340, isOpen, isDr
     }}>
       <video
         ref={videoRef}
-        src="/img/deliah2.0.0.obj.mp4"
+        src="/img/deliah2.0.mp4"
         autoPlay
         loop
         muted
