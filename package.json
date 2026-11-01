@@ -19,7 +19,7 @@
     "prepare:hostinger": "sh scripts/prepare-hostinger.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "security:chain": "npx ts-node --skip-project scripts/security-chain.ts",
+    "security:chain": "npx ts-node --skip-project -O '{\"module\":\"commonjs\"}' scripts/security-chain.ts",
     "security:audit": "npm audit",
     "security:fix": "npm audit fix",
     "security:typecheck": "npx tsc --noEmit",
