@@ -15,6 +15,8 @@
   "main": "index.js",
   "scripts": {
     "start": "react-scripts start",
+    "backend:start": "node Backend/server.js",
+    "backend:test": "node --test Backend/server.test.js",
     "build": "react-scripts build",
     "prepare:hostinger": "sh scripts/prepare-hostinger.sh",
     "test": "react-scripts test",
