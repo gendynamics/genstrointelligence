@@ -1,16 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Component, Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+
+const QmindsAvatar = lazy(() => import('./QmindsAvatar'));
 
 const MONO = "'DM Mono', monospace";
 
 /*
- * DELIAH AI — floating briefing widget
- * Chat panel + circular avatar anchored bottom-right, per the reference design.
+ * QMINDS AI — floating briefing widget
+ * Chat panel + 3D robot avatar (public/models/qminds.glb) anchored bottom-right.
  * Hidden on the home page. Tips rotate per page with "Next Tip (n/5)".
  */
 
 const DEFAULT_TIPS = [
-  "Welcome. Genstro Intelligence is the portal to next-generation AI. Enter once — and the future expands infinitely. I'm Deliah, your AI security analyst.",
+  "Welcome. Genstro Intelligence is the portal to next-generation AI. Enter once — and the future expands infinitely. I'm Qminds, your AI security analyst.",
   'Ask me about red team, blue team, and purple team operations — or the products we are building.',
   'Every page carries its own signal. Navigate and I will brief you on each domain.',
   'Security intelligence means seeing exposure clearly before it becomes impact.',
@@ -47,7 +49,7 @@ const PAGE_TIPS = {
     'Quantum readiness is a roadmap, not a product — assess, prioritize, migrate, validate.',
   ],
   '/products': [
-    "Welcome. Genstro Intelligence is the portal to next-generation AI. Enter once — and the future expands infinitely. I'm Deliah, your guide through the grid.",
+    "Welcome. Genstro Intelligence is the portal to next-generation AI. Enter once — and the future expands infinitely. I'm Qminds, your guide through the grid.",
     'GENSTRO SIEM correlates millions of events per second with adaptive threat scoring.',
     'REDSTRIKE runs continuous attack campaigns against your infrastructure — and reports exploitable paths.',
     'SHIELDWALL stops zero-day threats, ransomware, and fileless attacks before execution.',
@@ -55,9 +57,41 @@ const PAGE_TIPS = {
   ],
 };
 
-const Deliah = () => {
+// Falls back to a flat badge if WebGL or the model fails to load.
+class AvatarErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error) {
+    console.warn('[Qminds] 3D avatar unavailable, showing badge:', error && error.message);
+  }
+
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
+
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const update = () => setMatches(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, [query]);
+  return matches;
+}
+
+const Qminds = () => {
   const location = useLocation();
-  const [isCompact, setIsCompact] = useState(() => window.matchMedia('(max-width: 620px)').matches);
+  const isCompact = useMediaQuery('(max-width: 620px)');
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const tips = useMemo(
     () => PAGE_TIPS[location.pathname] || DEFAULT_TIPS,
     [location.pathname]
@@ -66,19 +100,19 @@ const Deliah = () => {
   const [tipIndex, setTipIndex] = useState(0);
   const [panelOpen, setPanelOpen] = useState(true);   // panel visible next to avatar
   const [hidden, setHidden] = useState(false);        // whole widget dismissed
-
-  useEffect(() => {
-    const media = window.matchMedia('(max-width: 620px)');
-    const updateCompact = () => setIsCompact(media.matches);
-    media.addEventListener('change', updateCompact);
-    return () => media.removeEventListener('change', updateCompact);
-  }, []);
+  const [spinKey, setSpinKey] = useState(0);          // bump to replay the spin jump
 
   // Reset the briefing on every page change
   useEffect(() => {
     setTipIndex(0);
     setPanelOpen(!isCompact);
+    setSpinKey(k => k + 1);
   }, [location.pathname, isCompact]);
+
+  const avatarSize = isCompact ? { width: 92, height: 130 } : { width: 120, height: 170 };
+  const badge = (
+    <span style={{ ...styles.badge, width: 76, height: 76 }}>Q</span>
+  );
 
   // No widget on the home page (matches the reference design)
   if (location.pathname === '/') return null;
@@ -89,7 +123,7 @@ const Deliah = () => {
       <button
         type="button"
         onClick={() => { setHidden(false); setPanelOpen(true); }}
-        aria-label="Open Deliah AI"
+        aria-label="Open Qminds AI"
         style={{
           position: 'fixed',
           bottom: 20,
@@ -107,7 +141,7 @@ const Deliah = () => {
           boxShadow: '0 0 20px rgba(103,232,249,0.3)',
         }}
       >
-        D
+        Q
       </button>
     );
   }
@@ -128,7 +162,7 @@ const Deliah = () => {
       {panelOpen && (
         <div
           role="dialog"
-          aria-label="Deliah AI briefing"
+          aria-label="Qminds AI briefing"
           style={{
             width: 'min(300px, calc(100vw - 150px))',
             background: 'rgba(4, 9, 13, 0.96)',
@@ -154,13 +188,13 @@ const Deliah = () => {
               letterSpacing: '0.26em',
               color: '#67e8f9',
             }}>
-              DELIAH AI
+              QMINDS AI
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.15rem' }}>
               <button
                 type="button"
                 onClick={() => setPanelOpen(false)}
-                aria-label="Minimize Deliah panel"
+                aria-label="Minimize Qminds panel"
                 style={styles.controlButton}
               >
                 —
@@ -168,7 +202,7 @@ const Deliah = () => {
               <button
                 type="button"
                 onClick={() => setHidden(true)}
-                aria-label="Close Deliah"
+                aria-label="Close Qminds"
                 style={styles.controlButton}
               >
                 ×
@@ -216,41 +250,47 @@ const Deliah = () => {
       {/* ─── Avatar ─── */}
       <button
         type="button"
-        onClick={() => setPanelOpen(open => !open)}
-        aria-label={panelOpen ? 'Hide Deliah panel' : 'Show Deliah panel'}
+        onClick={() => {
+          setPanelOpen(open => !open);
+          setSpinKey(k => k + 1);
+        }}
+        aria-label={panelOpen ? 'Hide Qminds panel' : 'Show Qminds panel'}
         style={{
-          position: 'relative',
-          width: 92,
-          height: 92,
-          borderRadius: '50%',
-          border: '2px solid rgba(103, 232, 249, 0.55)',
-          backgroundImage: 'url(/img/deliah.jpeg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 20%',
-          boxShadow: '0 0 24px rgba(103, 232, 249, 0.35)',
+          ...avatarSize,
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'center',
+          background: 'none',
+          border: 'none',
           cursor: 'pointer',
           padding: 0,
           flexShrink: 0,
         }}
       >
-        {/* Online indicator */}
-        <span style={{
-          position: 'absolute',
-          bottom: 4,
-          right: 4,
-          width: 12,
-          height: 12,
-          borderRadius: '50%',
-          background: '#22c55e',
-          border: '2px solid #000',
-          boxShadow: '0 0 6px #22c55e',
-        }} />
+        <AvatarErrorBoundary fallback={badge}>
+          <Suspense fallback={badge}>
+            <QmindsAvatar {...avatarSize} spinKey={spinKey} reducedMotion={reducedMotion} />
+          </Suspense>
+        </AvatarErrorBoundary>
       </button>
     </div>
   );
 };
 
 const styles = {
+  badge: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+    borderRadius: '50%',
+    border: '2px solid rgba(103, 232, 249, 0.55)',
+    background: 'rgba(4, 9, 13, 0.95)',
+    boxShadow: '0 0 24px rgba(103, 232, 249, 0.35)',
+    color: '#67e8f9',
+    fontFamily: MONO,
+    fontSize: '1.4rem',
+  },
   controlButton: {
     background: 'none',
     border: 'none',
@@ -263,4 +303,4 @@ const styles = {
   },
 };
 
-export default Deliah;
+export default Qminds;

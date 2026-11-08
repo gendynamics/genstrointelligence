@@ -7,7 +7,7 @@ const products = [
   { id: '02', name: 'Redstrike', tag: 'Offensive toolkit', headline: 'Find the pressure points before they find you.', color: '#e98b7c' },
   { id: '03', name: 'Shieldwall', tag: 'Endpoint protection', headline: 'Keep the edge of your operation intact.', color: '#a6d5c0' },
   { id: '04', name: 'Quantum Vault', tag: 'Encryption suite', headline: 'Protect what must remain private.', color: '#d8b16c' },
-  { id: '05', name: 'Deliah', tag: 'AI security analyst', headline: 'Turn complexity into a clear next move.', color: '#8ea6be' },
+  { id: '05', name: 'Qminds', tag: 'AI security analyst', headline: 'Turn complexity into a clear next move.', color: '#8ea6be' },
   { id: '06', name: 'Purplenet', tag: 'Validation engine', headline: 'Make confidence something you can test.', color: '#b3c2d6' },
 ];
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
-import Deliah from './components/Deliah';
+import Qminds from './components/Qminds';
 import Home from './pages/Home';
 import Architecture from './pages/Architecture';
 import About from './pages/About';
@@ -57,7 +57,7 @@ function App() {
     <Router>
       <Navigation />
       <SlideRoutes />
-      <Deliah />
+      <Qminds />
     </Router>
   );
 }
