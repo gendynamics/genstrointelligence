@@ -67,7 +67,7 @@ export const CSP_DIRECTIVES = {
   'style-src': ["'self'", "'unsafe-inline'"],   // Required for inline styles in React
   'img-src': ["'self'", 'data:', 'blob:'],
   'font-src': ["'self'", 'https://fonts.gstatic.com'],
-  'connect-src': ["'self'"],
+  'connect-src': ["'self'", 'blob:'],   // GLTFLoader reads embedded .glb textures via blob: URLs
   'frame-ancestors': ["'none'"],
   'base-uri': ["'self'"],
   'form-action': ["'self'"],

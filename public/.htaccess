@@ -43,11 +43,19 @@ RewriteRule \.(sql|bak|old|orig|swp|log|ini|conf|cfg)$ - [F,L,NC]
 # ── OWASP A05: Disable Directory Listing ──
 Options -Indexes
 
+# ── MIME types the server doesn't know by default ──
+# With X-Content-Type-Options: nosniff the browser refuses to guess, so
+# /users.m4 (Quantum page video) never plays without an explicit type.
+<IfModule mod_mime.c>
+    AddType video/mp4 .m4
+    AddType model/gltf-binary .glb
+</IfModule>
+
 # ── Security Headers ──
 
 <IfModule mod_headers.c>
     # OWASP A03: Content Security Policy (Injection Prevention)
-    Header set Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; media-src 'self'; object-src 'none'; child-src 'none'; frame-src 'none'; worker-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests"
+    Header set Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' blob:; media-src 'self'; object-src 'none'; child-src 'none'; frame-src 'none'; worker-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests"
 
     # OWASP A01: Clickjacking Prevention
     Header set X-Frame-Options "DENY"
