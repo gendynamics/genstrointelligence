@@ -8,20 +8,13 @@ const MONO = "'DM Mono', monospace";
 const SANS = "'Manrope', sans-serif";
 const CYAN = '#67e8f9';
 
-const WALK_IN_PX = 90;       // how far right of his spot Qminds starts his walk-in (clipped by his box)
+const WALK_IN_PX = 90;
 const WALK_IN_MS = 1500;
-const MIN_THINK_MS = 650;    // keep the thinking pose visible even for instant local answers
+const MIN_THINK_MS = 650;
 const NAVIGATE_DELAY_MS = 900;
-const CLICK_MOVE_WINDOW_MS = 2000; // a page change this soon after a category click doesn't repeat the move
-const MENU_MOVE = 'scan';          // opening a category menu (e.g. Cybersecurity)
+const CLICK_MOVE_WINDOW_MS = 2000;
+const MENU_MOVE = 'scan';
 const MAX_MESSAGES = 40;
-
-/*
- * QMINDS AI — floating briefing + chat widget
- * 3D robot avatar (public/models/qminds.glb) anchored bottom-right, beside a chat panel.
- * Hidden on the home page. On each page Qminds posts a briefing and performs that
- * category's move; visitors can chat, ask him to navigate, or ask for a move.
- */
 
 const DOTS_KEYFRAMES = `
 @keyframes qminds-dot { 0%, 80%, 100% { opacity: 0.25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-2px); } }
@@ -30,7 +23,6 @@ const DOTS_KEYFRAMES = `
 let messageId = 0;
 const makeMessage = (from, text) => ({ id: ++messageId, from, text });
 
-// Falls back to a flat badge if WebGL or the model fails to load.
 class AvatarErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -61,7 +53,6 @@ function useMediaQuery(query) {
   return matches;
 }
 
-// Reveals text a few characters at a time while Qminds "speaks" it.
 function Typewriter({ text, active, onDone, onTick }) {
   const [shown, setShown] = useState(active ? 0 : text.length);
   const callbacks = useRef({ onDone, onTick });
@@ -111,7 +102,7 @@ const Qminds = () => {
   const [thinking, setThinking] = useState(false);
   const [typingId, setTypingId] = useState(null);
   const [move, setMove] = useState({ name: null, id: 0 });
-  const [walkIn, setWalkIn] = useState('idle'); // idle → start → walking → done
+  const [walkIn, setWalkIn] = useState('idle');
 
   const visible = route !== '/' && !hidden;
   const routeRef = useRef(route);
@@ -119,7 +110,7 @@ const Qminds = () => {
   const walkInRef = useRef(walkIn);
   walkInRef.current = walkIn;
   const briefedRoute = useRef(null);
-  const clickedCategory = useRef(null); // { category, at } from the last category click
+  const clickedCategory = useRef(null);
   const pointer = useRef({ x: -0.6, y: -0.5 });
   const avatarRef = useRef(null);
   const listRef = useRef(null);
@@ -146,9 +137,8 @@ const Qminds = () => {
     if (list) list.scrollTop = list.scrollHeight;
   }, []);
 
-  // New page: brief on it and perform the category's move.
   useEffect(() => {
-    if (briefedRoute.current === route) return; // also absorbs StrictMode's double effect
+    if (briefedRoute.current === route) return;
     briefedRoute.current = route;
     if (route === '/') return;
     setTipIndex(0);
@@ -159,8 +149,6 @@ const Qminds = () => {
     if (walkInRef.current === 'done' && !alreadyMoved) perform(moveForRoute(route));
   }, [route, say, perform]);
 
-  // Show the category's move the moment a category is clicked — even the page you're on,
-  // and category menus like Cybersecurity — instead of waiting for the page to change.
   useEffect(() => {
     if (!visible) return undefined;
     const onClick = event => {
@@ -185,12 +173,15 @@ const Qminds = () => {
     setPanelOpen(!isCompact);
   }, [isCompact]);
 
-  // The avatar unmounts while hidden; walk in again when it comes back.
   useEffect(() => {
     if (!visible) setWalkIn('idle');
   }, [visible]);
 
-  // Walk in from the right once the model is on screen, then do the page's move.
+  // FIX: on phones, start minimized on the contact page so the robot doesn't cover the form.
+  useEffect(() => {
+    if (isCompact && route.startsWith('/contact')) setHidden(true);
+  }, [route, isCompact]);
+
   const onAvatarReady = useCallback(() => {
     if (reducedMotion) {
       setWalkIn('done');
@@ -204,7 +195,6 @@ const Qminds = () => {
     }, WALK_IN_MS);
   }, [reducedMotion, later, perform]);
 
-  // Head follows the cursor.
   useEffect(() => {
     if (!visible) return undefined;
     const onMove = event => {
@@ -259,10 +249,8 @@ const Qminds = () => {
     event.preventDefault();
     send(draft);
   };
-
   if (route === '/') return null;
 
-  // Dismissed state: tiny restore dot
   if (hidden) {
     return (
       <button
@@ -276,7 +264,8 @@ const Qminds = () => {
     );
   }
 
-  const avatarSize = isCompact ? { width: 92, height: 130 } : { width: 120, height: 170 };
+  // FIX: smaller robot on phones.
+  const avatarSize = isCompact ? { width: 64, height: 90 } : { width: 120, height: 170 };
   const walkStyle = walkIn === 'start'
     ? { transform: `translateX(${WALK_IN_PX}px)`, transition: 'none' }
     : walkIn === 'walking'
@@ -289,7 +278,6 @@ const Qminds = () => {
     <div style={styles.dock}>
       <style>{DOTS_KEYFRAMES}</style>
 
-      {/* ─── Chat panel ─── */}
       {panelOpen && (
         <div
           role="dialog"
@@ -363,7 +351,6 @@ const Qminds = () => {
         </div>
       )}
 
-      {/* ─── Avatar ─── */}
       <button
         ref={avatarRef}
         type="button"
@@ -374,7 +361,6 @@ const Qminds = () => {
         aria-label={panelOpen ? 'Hide Qminds panel' : 'Show Qminds panel'}
         style={{ ...styles.avatar, ...avatarSize }}
       >
-        {/* The walk-in slides inside this clipped box; moving past the screen edge would widen the page on phones. */}
         <span style={{ ...styles.avatarStage, ...walkStyle }}>
           <AvatarErrorBoundary fallback={badge}>
             <Suspense fallback={badge}>
@@ -395,7 +381,6 @@ const Qminds = () => {
     </div>
   );
 };
-
 const styles = {
   dock: {
     position: 'fixed',
