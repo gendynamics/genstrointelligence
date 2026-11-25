@@ -19,7 +19,7 @@ const Quantum = () => {
         </p>
       </section>
 
-      {/* Full-bleed quantum starburst */}
+      {/* Quantum starburst — shown at its natural shape, never cropped */}
       <section style={styles.mediaWrap} aria-label="Quantum visualization">
         <video
           style={styles.media}
@@ -46,7 +46,7 @@ const styles = {
     maxWidth: '980px',
     margin: '0 auto',
     textAlign: 'center',
-    padding: '4.5rem 2rem 4rem',
+    padding: '4.5rem 1.5rem 3rem',
   },
   eyebrow: {
     fontFamily: MONO,
@@ -70,14 +70,19 @@ const styles = {
     lineHeight: 1.75,
   },
   mediaWrap: {
-    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    padding: '0 1.5rem 4rem',
   },
   media: {
-    width: '100%',
-    height: 'min(72vh, 680px)',
-    objectFit: 'cover',
     display: 'block',
+    width: '100%',
+    maxWidth: '900px',   // caps it on laptops so it doesn't take over the page
+    maxHeight: '70vh',   // never taller than 70% of the screen
+    height: 'auto',      // keeps the video's own shape
+    objectFit: 'contain', // shows the whole frame, no cropping
   },
 };
 
 export default Quantum;
+
