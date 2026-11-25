@@ -112,7 +112,6 @@ const RnD = () => {
           width: 100%;
           position: relative;
           isolation: isolate;
-          transform: perspective(1200px) rotateX(2deg);
         }
         .cyber-page .cyber-video-shell::before {
           content: "";
@@ -124,12 +123,10 @@ const RnD = () => {
           z-index: -1;
         }
         .cyber-page .cyber-video {
+          display: block;
           width: 100%;
-          height: min(60vw, 560px);
-          max-height: 560px;
-          aspect-ratio: 16 / 10;
-          object-fit: cover;
-          transform: translateY(-4px) scale(1.02);
+          height: auto;
+          object-fit: contain;
           animation: cyberPulseResearch 7s ease-in-out infinite alternate;
         }
         @keyframes cyberPulseResearch {
@@ -140,7 +137,7 @@ const RnD = () => {
           .cyber-page .cyber-hero { grid-template-columns: 1fr !important; }
           .cyber-page .cyber-bottom { grid-template-columns: 1fr !important; }
           .cyber-page .cyber-video-shell { max-width: 760px; margin: 0 auto; }
-          .cyber-page .cyber-video { height: min(72vw, 420px) !important; }
+          .cyber-page .cyber-video { height: auto !important; }
         }
         @media (max-width: 640px) {
           .cyber-page .cyber-header { padding-left: 1.25rem; padding-right: 1.25rem; }
@@ -148,7 +145,7 @@ const RnD = () => {
           .cyber-page .cyber-main { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
           .cyber-page .cyber-copy { padding-right: 0 !important; }
           .cyber-page .cyber-h1 { font-size: clamp(2.2rem, 10vw, 2.9rem) !important; }
-          .cyber-page .cyber-video { height: clamp(220px, 60vw, 320px) !important; }
+          .cyber-page .cyber-video { height: auto !important; }
           .cyber-page .cyber-bottom p { justify-self: start !important; }
           .cyber-page .cyber-back { padding-left: 0 !important; }
         }
@@ -178,7 +175,7 @@ const styles = {
   secondaryLink: { color: '#edf0ff', textDecoration: 'none', padding: '0.9rem 1.2rem' },
   videoWrap: { position: 'relative', display: 'flex', justifyContent: 'center', padding: '0.35rem 0.2rem 0.5rem', filter: 'drop-shadow(0 28px 60px rgba(72, 82, 180, 0.2))' },
   orbit: { position: 'absolute', inset: '10% 16%', border: '1px solid rgba(147, 165, 255, 0.18)', borderRadius: '50%', boxShadow: '0 0 60px rgba(89, 106, 255, 0.1)', animation: 'cyberOrbitResearch 10s linear infinite' },
-  video: { width: '100%', height: '560px', objectFit: 'cover', borderRadius: 0, border: 'none', boxShadow: 'none', background: 'transparent', filter: 'saturate(1.18) contrast(1.08) drop-shadow(0 24px 60px rgba(84, 92, 180, 0.4))' },
+  video: { width: '100%', height: 'auto', objectFit: 'contain', borderRadius: 0, border: 'none', boxShadow: 'none', background: 'transparent', filter: 'saturate(1.18) contrast(1.08) drop-shadow(0 24px 60px rgba(84, 92, 180, 0.4))' },
   metricRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2rem', margin: '3rem 0', borderTop: '1px solid rgba(142, 140, 255, 0.14)', paddingTop: '2rem' },
   metricCard: { background: 'transparent', border: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem' },
   metricValue: { fontSize: '2rem', fontWeight: 700, color: '#b6b6ff' },
