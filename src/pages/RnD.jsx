@@ -47,17 +47,17 @@ const RnD = () => {
         </nav>
       </header>
 
-      <main style={styles.main}>
+      <main className="cyber-main" style={styles.main}>
         <section className="cyber-hero" style={styles.hero}>
-          <div style={styles.copy}>
+          <div className="cyber-copy" style={styles.copy}>
             <p style={styles.eyebrow}>Cyber research & development</p>
-            <h1 style={styles.h1}>Build the next generation of cyber defense before adversaries redefine the threat model.</h1>
+            <h1 className="cyber-h1" style={styles.h1}>Build the next generation of cyber defense before adversaries redefine the threat model.</h1>
             <p style={styles.lead}>
               Genstro’s research engine transforms emerging cyber signals into resilient controls, detection innovation, and operational strategies that can withstand real-world adversary pressure.
             </p>
             <div style={styles.actions}>
               <a href="#lab" style={styles.primaryButton}>Explore the lab</a>
-              <a href="/" style={styles.secondaryLink}>Back to home</a>
+              <a href="/" className="cyber-back" style={styles.secondaryLink}>Back to home</a>
             </div>
           </div>
 
@@ -96,7 +96,7 @@ const RnD = () => {
           ))}
         </section>
 
-        <section id="lab" style={styles.bottomPanel}>
+        <section id="lab" className="cyber-bottom" style={styles.bottomPanel}>
           <div>
             <p style={styles.eyebrow}>The Genstro lab</p>
             <h2 style={styles.h2}>The next frontier of defense begins where uncertainty is first observed.</h2>
@@ -137,20 +137,25 @@ const RnD = () => {
           100% { box-shadow: 0 30px 90px rgba(111, 120, 255, 0.34); }
         }
         @media (max-width: 980px) {
-          .cyber-page .cyber-hero { grid-template-columns: 1fr; }
+          .cyber-page .cyber-hero { grid-template-columns: 1fr !important; }
+          .cyber-page .cyber-bottom { grid-template-columns: 1fr !important; }
           .cyber-page .cyber-video-shell { max-width: 760px; margin: 0 auto; }
-          .cyber-page .cyber-video { height: min(72vw, 420px); }
+          .cyber-page .cyber-video { height: min(72vw, 420px) !important; }
         }
         @media (max-width: 640px) {
-          .cyber-page .cyber-header { padding-left: 1rem; padding-right: 1rem; }
+          .cyber-page .cyber-header { padding-left: 1.25rem; padding-right: 1.25rem; }
           .cyber-page .cyber-nav { gap: 0.75rem 1rem; }
-          .cyber-page .cyber-video { height: clamp(220px, 52vw, 320px); }
+          .cyber-page .cyber-main { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+          .cyber-page .cyber-copy { padding-right: 0 !important; }
+          .cyber-page .cyber-h1 { font-size: clamp(2.2rem, 10vw, 2.9rem) !important; }
+          .cyber-page .cyber-video { height: clamp(220px, 60vw, 320px) !important; }
+          .cyber-page .cyber-bottom p { justify-self: start !important; }
+          .cyber-page .cyber-back { padding-left: 0 !important; }
         }
       `}</style>
     </div>
   );
 };
-
 const styles = {
   page: { minHeight: '100vh', background: 'radial-gradient(circle at top, rgba(87, 65, 191, 0.2), #070b13 45%)', color: '#f2f4ff', fontFamily: 'Inter, Arial, sans-serif', position: 'relative', overflow: 'hidden' },
   glowA: { position: 'absolute', top: '8%', right: '10%', width: '25rem', height: '25rem', borderRadius: '50%', background: 'radial-gradient(circle, rgba(168, 162, 255, 0.18), rgba(168, 162, 255, 0) 70%)', filter: 'blur(18px)' },
@@ -168,7 +173,7 @@ const styles = {
   eyebrow: { color: '#b6b6ff', letterSpacing: '0.18em', textTransform: 'uppercase', fontSize: '0.8rem', margin: '0 0 1rem' },
   h1: { fontSize: 'clamp(2.9rem, 5vw, 5.5rem)', lineHeight: 1.06, margin: '0 0 1rem', maxWidth: '680px' },
   lead: { fontSize: '1.15rem', lineHeight: 1.8, color: 'rgba(242,244,255,0.8)', maxWidth: '560px' },
-  actions: { display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '2rem' },
+  actions: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', marginTop: '2rem' },
   primaryButton: { background: 'linear-gradient(135deg, #c6c3ff, #8aa7ff)', color: '#0a1223', textDecoration: 'none', padding: '0.9rem 1.3rem', borderRadius: '999px', fontWeight: 700 },
   secondaryLink: { color: '#edf0ff', textDecoration: 'none', padding: '0.9rem 1.2rem' },
   videoWrap: { position: 'relative', display: 'flex', justifyContent: 'center', padding: '0.35rem 0.2rem 0.5rem', filter: 'drop-shadow(0 28px 60px rgba(72, 82, 180, 0.2))' },
